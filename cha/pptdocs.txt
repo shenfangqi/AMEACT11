@@ -1,0 +1,21 @@
+page1
+Title:在Second Life平台实现自动土地出租系统 
+
+在虚拟世界中实现真实的B2C业务系统
+
+
+page2
+Second Life中存在以下需求
+1，公司或者个人形象展示
+2，真实产品广告
+3，虚拟产品销售
+4，娱乐
+
+
+page3
+Second Life市场经济介绍
+1，通过secondlife自有货币交易。
+
+
+
+

@@ -1,0 +1,244 @@
+<html>
+<title>Now Chat</title>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<meta name="viewport" content="width=device-width,initial-scale=0.5,minimum-scale=0.5,maximum-scale=0.5">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<head>
+<style>
+.notify {
+	margin: 16px 0px 0px; display: block;
+}
+.notify .form-input {
+	width: 200px; margin-right: 10px; float: left;
+}
+.notify .form-input input {
+	width: 170px;
+}
+.notify input {
+	margin: 6px 0px 12px; padding: 4px 5px; border-radius: 3px; border: 4px solid rgb(230, 232, 233); font-size: 14px; float: left; display: block; -moz-border-radius: 3px;
+}
+.notify input:focus {
+	border-color: rgb(0, 124, 195);
+}
+#search-form {
+	margin: 8px 0px 0px;
+}
+#search-form input {
+	display: inline-block;
+}
+#search-form #search-btn {
+	margin: 8px 0px 0px; border: 0px solid rgb(49, 58, 67); width: 55px; height: 25px; text-indent: -999em; float: right; cursor: pointer; background-image: url("/_images/btn-search.gif"); backround-repeat: no-repeat;
+}
+#search-form #search-btn:hover {
+	background-position: 0px -25px;
+}
+</style>
+
+<link rel="stylesheet" href="jquery-ui-1.8.11/themes/base/jquery.ui.all.css">
+<link rel="stylesheet" href="jquery-ui-1.8.11/demos/demos.css">
+
+<script src="jquery-ui-1.8.11/jquery-1.5.1.js"></script>
+<script src="jquery-ui-1.8.11/external/jquery.bgiframe-2.1.2.js"></script>
+<script src="jquery-ui-1.8.11/ui/jquery.ui.core.js"></script>
+<script src="jquery-ui-1.8.11/ui/jquery.ui.widget.js"></script>
+<script src="jquery-ui-1.8.11/ui/jquery.ui.position.js"></script>
+<script src="jquery-ui-1.8.11/ui/jquery.ui.resizable.js"></script>
+<script src="jquery-ui-1.8.11/ui/jquery.ui.dialog.js"></script>
+
+<script language="javascript">
+function showRoom(val) {
+   var obj1=document.getElementById("s1");
+   var obj2=document.getElementById("s2");
+
+   obj1.style.display="none";
+   obj2.style.display="none";
+
+   if(val=="s1")
+      obj1.style.display="";
+   if(val=="s2")
+      obj2.style.display="";
+}
+
+function clearRoom() {
+   var obj1=document.getElementById("s1");
+   var obj2=document.getElementById("s2");
+
+   obj1.style.display="none";
+   obj2.style.display="none";
+
+}
+
+var i = 0;
+var max_i = 2;
+var rpt=0;
+
+var stop=Array();
+stop["1001"]=1;
+stop["1002"]=0;
+var selected="";
+
+var w1001="";
+var w1002="";
+
+function clearAct(imgid) {
+    selected=imgid;
+    clearTimeout(imgid)
+}
+
+function displayImage1001(imgid)
+{
+        selected=imgid;
+        var img = document.createElement("img");
+        var isrun=true;
+
+        img.onload = function () {
+                var div = document.getElementById("image"+imgid);
+                while (div.childNodes.length > 0)
+                     div.removeChild(div.childNodes[0]);
+                div.appendChild(img);
+
+                if (i == max_i) {
+                        i = 0;
+                        rpt++;
+                }
+                else  {
+                        i ++;
+                }
+                //if(rpt<1)
+                w1001=window.setTimeout("displayImage1001("+imgid+")", 150);
+        }
+        img.src = "./res/spriteRes/"+imgid+"/"+imgid+"_13_"+ i + ".png";
+        img.border="0px";
+}
+
+function displayImage1002(imgid)
+{
+        selected=imgid;
+        var img = document.createElement("img");
+        var isrun=true;
+
+        img.onload = function () {
+                var div = document.getElementById("image"+imgid);
+                while (div.childNodes.length > 0)
+                     div.removeChild(div.childNodes[0]);
+                div.appendChild(img);
+
+                if (i == max_i) {
+                        i = 0;
+                        rpt++;
+                }
+                else  {
+                        i ++;
+                }
+                //if(rpt<1)
+                w1002=window.setTimeout("displayImage1002("+imgid+")", 150);
+        }
+        img.src = "./res/spriteRes/"+imgid+"/"+imgid+"_13_"+ i + ".png";
+        img.border="0px";
+}
+
+function goto(room) {
+        var puser=document.getElementById("puser").value;
+
+        if(selected=="")
+            alert("You should choose a character by click on it.");
+        else if(CheckForm(puser)) {
+               window.open("h6.php?room="+room+"&usersele="+selected+"&puser="+escape(puser),"_top");
+        }
+}
+
+
+function loadAbout() {
+		$( "#dialog-about" ).dialog({
+		    width: 560,
+			height: 500,
+			modal: true,
+	  	    buttons: {
+				"Ok": function() {
+		 			        $(this).dialog("close");
+						 }
+			}
+		});
+}
+
+function CheckForm(userstr){
+       if(userstr=="") {
+            alert("User name should not be empty.");
+            return false;
+       }
+       var iu;
+       var iuu;
+       var regArray=new Array("",";","_","|"," ",":",",");
+       iuu=regArray.length;
+       for(iu=1;iu<=iuu;iu++){
+              if (userstr.indexOf(regArray[iu])!=-1){
+                     alert("User name should not contains:\"" + regArray[iu] + "\".");
+                     return false;
+              }
+       }
+       return true;
+}
+
+function run1001() {
+       if(selected != "1001")
+            displayImage1001("1001");
+}
+
+function run1002() {
+       if(selected != "1002")
+            displayImage1002("1002");
+}
+
+</script>
+</head>
+
+<body>
+
+<div id="layLoading" style="z-index:1;left:0px;top:40px;position: absolute;width:1034px;height:512px;display:none">
+    <img src="loading1.gif" style="z-index:1;left:480px;top:150px;position: absolute;">
+</div>
+
+<div id="about" style="z-index:1;left:910px;top:10px;position: absolute">
+<a href="#" onclick="loadAbout()"><img src="./res/icons/aboutus.png" border=0></a>
+</div>
+
+ <div  id="main" style="z-index:0;border: 5px solid #000;width:960px;height: 640px; left:0; top:0; position: absolute; background:url(./res/enter.jpg)">
+      <input id="puser" type=text style="z-index:1;left:265px; top:560px; width:190px;position: absolute;border:1">
+      <a  href="#" style="z-index:1;left:280px; top:450px; position: absolute" id="image1001"  onclick="javascript:if(selected !=1001) {clearAct(w1002);run1001()}"><img border=0px src="./res/spriteRes/1001/1001_13_0.png"></a>
+      <a  href="#" style="z-index:1;left:390px; top:435px; position: absolute" id="image1002"  onclick="javascript:if(selected !=1002) {clearAct(w1001);run1002()}"><img border=0px src="./res/spriteRes/1002/1002_13_0.png"></a>
+
+      <a href="#"><img  border=0 src="./res/room1.png" style="z-index:1;left:530px; top:470px; position: absolute;" onclick="goto('1')" onmouseover="showRoom('s1')" onmouseout="clearRoom()"></a>
+      <a href="#"><img  border=0 src="./res/room2.png" style="z-index:1;left:580px; top:520px; position: absolute;" onclick="goto('2')" onmouseover="showRoom('s2')" onmouseout="clearRoom()"></a>
+      <a href="#"><img id="s1" src="./res/room1_show.png" style="z-index:1;left:330px; top:350px; position: absolute;display:none" border=0></a>
+      <a href="#"><img id="s2" src="./res/room2_show.png" style="z-index:1;left:670px; top:410px; position: absolute;display:none" border=0></a>
+</div>
+
+<div id="dialog-about" title="About us" style="z-index:1;display:none">
+	<div id="aboutText">
+Introduction of Now Chat.<br>
+----------------------------<br><br>
+
+We are glad to release Now Chat which maybe regard as a Minestone in social game developing field. Usually a game like this requires browser plugin programs to run. We did exact the samething as plugin can do in a social game by HTML5. People can walking around and chat in Now Chat, date with friends, and even change the looks of the room. And all this happen in realtime. And what's more, you can access it from all kind of terminal such as Iphone,Android and all the desktop browers. So wherever you are, whatever terminal you are using, come and join and enjoy Now Chat.<br><br>
+
+Developers<br>
+----------------------------<br><br>
+Nevin.S : Have massive developing experiences in SecondLife world.  He developed all program for Chat Now,  and base on this project, created an HTML5 social engine for socail game developing including map generating and editing, realtime data transfering, character generating and game item generating system.
+<br><br>
+Addison.Lee : An artist in SecondLife and Imvu world, You  most likely have seen his work if you are the residents of those 2 worlds. He responsibled for the art work of Now Chat project.<br><br>
+
+
+How to reach us<br>
+----------------------------<br><br>
+If you have any opnion or suggestion on this project, you may reach us by the email "<a href="mailto:nevin.ug206@gmail.com">nevin.ug206@gmail.com</a>", We are looking forward the contacting from you.<br>
+    </div>
+</div>
+
+<button value="room1" onclick="this.form.action='h6.php?room=1';this.form.submit()">room1</button>
+<button value="room2" onclick="this.form.action='h6.php?room=2';this.form.submit()">room2</button>
+
+</body>
+
+</html>
+
+

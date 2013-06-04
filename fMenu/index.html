@@ -1,0 +1,100 @@
+<html>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+
+<script type="text/javascript" src="./jOrbital/jquery-1.5.1.js"></script>
+<script type="text/javascript" src="./jOrbital/jquery.jorbital.js"></script>
+
+<!--[if lt IE 9]>
+	<script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+<![endif]-->
+
+<head>
+
+<title>jOrbital - jQuery round menu</title>
+
+<style type="text/css">
+	img { border:0 }
+
+	a { color:#c00 }
+
+	#news { text-align:left; margin:auto; padding-top:150px; width:728px; }
+	.clear { clear:both }
+	.share-button {margin:auto; background:#fff; padding:1px 1px;width:1px;
+
+	}
+	.share-button:hover{ background:#fff }
+	.orbit { background-color:rgba(0,0,0,0.4); border:2px solid #888;
+	border-radius:200px; -moz-border-radius:200px;  -webkit-border-radius:200px;  }
+	.orbit { background-image:url('../ietrans.gif') }
+	.orbit a:hover { background:rgba(255,255,255,0.6); }
+	.orbit a { padding:8px;
+		border-radius:32px; -moz-border-radius:32px; -webkit-border-radius:32px;}
+</style>
+
+<!--[if lt IE 9]>
+<style type="text/css">
+	.orbit { background-color:transparent; border:none }
+</style>
+<![endif]-->
+
+<script type="text/javascript">
+	$( function() {
+
+		$(".share-button").jOrbital({ inDuration:300, radius:1.5 });
+
+	});
+</script>
+
+</head>
+
+<body>
+
+<div id="news">
+	<div id="ggg" class="share-button">
+		<div class="orbit">
+			<a href="#"><img src="./jOrbital/digg.png" /></a>
+			<a href="#"><img src="./jOrbital/delicious.png" /></a>
+			<a href="javascript:setFa()"><img src="./jOrbital/facebook.png" /></a>
+			<a href="#"><img src="./jOrbital/twitter.png" /></a>
+			<a href="#"><img src="./jOrbital/technorati.png" /></a>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+
+<img id="sss" src="../2_bg_grass1.png" style="position:absolute;left:400px;top:400px">
+<img id="fff" src="./jOrbital/delicious.png" style="position:absolute;left:100px;top:100px" onclick="showmenu(this.style.left,this.style.top,e)">
+
+
+</body>
+
+<script>
+
+function setFa() {
+ $(".share-button").mouseleave();
+}
+
+document.getElementById('sss').onclick = function(e){
+        e=e || window.event;
+        var win_left = document.body.scrollLeft;
+        var win_top = document.body.scrollTop;
+
+        //alert(e.clientX +":"+ e.clientY);
+        $(".share-button").css("position","absolute");
+        $(".share-button").css("left",e.clientX+win_left);
+        $(".share-button").css("top",e.clientY+win_top);
+        $(".share-button").mouseenter();
+}
+document.getElementById('fff').onclick = function(e){
+        e=e || window.event;
+        var win_left = document.body.scrollLeft;
+        var win_top = document.body.scrollTop;
+
+        //alert(e.clientX +":"+ e.clientY);
+        $(".share-button").css("position","absolute");
+        $(".share-button").css("left",e.clientX+win_left);
+        $(".share-button").css("top",e.clientY+win_top);
+        $(".share-button").mouseenter();
+}
+</script>
+</html>

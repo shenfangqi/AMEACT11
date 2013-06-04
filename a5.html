@@ -1,0 +1,56 @@
+<style>
+
+.menubox {
+    	 width: 100px;
+	     height: 500px;
+	     text-align:center;
+         -moz-border-radius: 10px;   /* firefox */
+         border-radius: 10px;        /* CSS3 */
+         -moz-box-shadow: 5px 5px 10px #aaaaaa; /* Firefox */
+         -webkit-box-shadow: 5px 5px 10px #aaaaaa; /* Safari,Chrome */
+         box-shadow: 5;
+         padding: 5px 5px;
+         background-color:#e0e0e0;
+}
+
+.box {
+    	 width: 70px;
+	     height: 70px;
+	     text-align:center;
+	     margin:0 auto;
+         -moz-border-radius: 10px;   /* firefox */
+         border-radius: 10px;        /* CSS3 */
+         -moz-box-shadow: 5px 5px 10px #aaaaaa; /* Firefox */
+         -webkit-box-shadow: 5px 5px 10px #aaaaaa; /* Safari,Chrome */
+         box-shadow: 5;
+         padding: 5px 5px;
+}
+
+.box1 {
+}
+
+#a{border:1px solid red; width:50px; height:50px; float:left; margin:5px;}
+</style>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+
+
+
+
+<div class="menuBox"><br><br>
+   <div  class="box1"><img src="./res/icons/move.png"></div><br>
+   <div  class="box1"><img src="./res/icons/clone1.png"></div><br><br>
+   <div  class="box1"><img src="./res/icons/remove.png"></div><br><br>
+   <div  class="box1"><img src="./res/icons/tools.png"></div><br><br>
+</div>
+
+
+<script language="javascript">
+
+$(".box1").click(function() {
+   $(".box1").removeClass("box");
+   $(this).addClass("box");
+})
+
+</script>

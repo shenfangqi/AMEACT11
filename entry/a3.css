@@ -1,0 +1,33 @@
+@charset "gb2312";
+/* CSS Document */
+
+body { 
+  margin:0 auto; font-size:12px; font-family:Verdana; line-height:1.5;}
+  ul,dl,dd,h1,h2,h3,h4,h5,h6,form,p { padding:0; margin:0;
+}
+ul { list-style:none;}
+img { border:0px;}
+a { color:#05a; text-decoration:none;}
+a:hover { color:#f00;}
+.clearfloat {clear:both;height:0;font-size: 1px;line-height: 0px;} 
+
+/*body*/
+#container { width:980px; margin:0 auto;}
+
+/*main*/
+#main {overflow:auto; zoom:1;background:#CCFFCC; margin-bottom:8px;}
+
+#header { float:left;overflow:auto; height:500px; width:28%;zoom:1;  background:#CCFFCC; margin-bottom:8px;}
+   #avatar { float:top; height:30%; width:100%; background:#FFFF99;}
+   #ctrl { float:bottom; height:70%;  width:100%; background:#FFCC99;}
+
+#maincontent {float:right; width:70%;overflow:auto; zoom:1;margin-bottom:8px;background:#FFFF99;}
+
+
+/*header*/
+#nav { height:60px; background:#CCFFCC; margin-bottom:8px;}
+
+/*main*/
+
+/*footer*/
+#footer { height:30px; background:#CCFFCC;}

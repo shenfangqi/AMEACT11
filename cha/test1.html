@@ -1,0 +1,52 @@
+<script language="javascript">
+
+function human() {
+    this.res = new Array;
+}
+
+human.prototype.preload = function(img_arr) {
+    for(var i=0;i<img_arr.length;i++)  {
+        var imgname = img_arr[i];
+        var item_img = new Image();
+        item_img.src = "images/" + imgname + ".png";
+
+        item_img.onload = function() {
+           var fn = this.src.split("/");
+           fn = fn[fn.length-1];
+           fn = fn.split(".")[0];
+
+           sprite_arr[i]=item_img
+alert(sprite_arr.length);
+
+           //isloaded++;
+           //if(isloaded == img_arr.length) {
+           //    alert(isloaded);
+           //    alert(sprite_arr.length);
+           //}
+        }
+    }
+
+}
+
+function human_res() {
+    this.sprite_arr = new Array();
+    this.isloaded = 0;
+}
+
+human_res.prototype.setImg = function(imgname,imgfile) {
+    this.sprite_arr[this.isloaded]=imgfile;
+    alert(this.sprite_arr.length);
+    if(this.isloaded == this.sprite_arr.length) {
+       alert(this.sprite_arr.length);
+    }
+    this.isloaded ++;
+}
+
+
+var s1 = new human();
+var sprite_arr = new Array;
+
+var img_arr = ["lLeg","shoes","lHand","body","rLeg","shoes","rHand","head"];
+s1.preload(img_arr);
+
+</script>

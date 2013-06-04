@@ -1,0 +1,67 @@
+<html>
+
+<script src="http://180.37.144.138:3000/socket.io/socket.io.js"></script>
+
+<script language="javascript">
+    options = {
+        'secure':                    false,
+        'connect timeout':           50000000,
+        'try multiple transports':   true,
+        'reconnect':                 false,
+        'sync disconnect on unload': false,
+        'remember transport':        true,
+        'transports': ['websocket', 'flashsocket', 'htmlfile', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
+    };
+
+    var socket;
+    var connected = false;
+
+    function chat(room, name) {
+        socket.on('connected', function() {
+            socket.json.emit('init', { 'room': room, 'name': name });
+        });
+
+        socket.on('disconnect', function() {
+            if(self.parent.isgomain)
+                self.parent.location.href="./";
+        });
+
+        socket.on('other', function (msg) {
+             if(msg == "connected")  {
+                 connected = true;
+                 return;
+             }
+             var cmd = msg.substring(0,2);
+             msg = msg.substring(2);
+             if(cmd == "LI") {
+                 parent.set_other_path(msg);
+                 document.getElementById("t1").innerHTML="li:"+msg;
+                 //alert(document.getElementById("t1").innerHTML);
+                 setTimeout(parent.set_main_heart,5000);
+             }
+             if(cmd == "PA")  {
+                 document.getElementById("t1").innerHTML="pa:"+msg;
+                 parent.set_other_path(msg);
+             }
+             else if(cmd == "LO")
+                 parent.otherSprites.remove_user(msg);
+             else if(cmd == "SA")
+                 parent.set_other_chat(msg);
+             else if(cmd == "AC")
+                 parent.set_other_act(msg);
+             else if(cmd == "CL")
+                 parent.set_other_cloth(msg);
+        });
+    }
+
+    function conn()  {
+        socket = io.connect('http://180.37.144.138:3000',options);
+        chat(parent.room_id,parent.user);
+    }
+</script>
+
+<body><div id="t1">sss</div></body>
+</html>
+
+
+

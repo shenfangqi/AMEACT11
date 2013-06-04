@@ -1,0 +1,49 @@
+<html>
+<body>
+<a href="#" onclick="alert('cc')">aaafa</a>
+
+ <script type="text/javascript" src="Concurrent.Thread.Compiler.js"></script>
+
+<script>
+
+// 時間がかかりそうな計算をしている間，ユーザーにフリーズして
+// いないことを示すために，バーをくるくる回すような例．
+
+//計算中の表示を行うスレッド
+var ui_t = Concurrent.Thread.create(function(){
+	var i = 0;
+	var m = Array("|", "/","-","\\");
+	while ( 1 ) {
+		document.body.innerHTML = "Now calculating..."  + m[i];
+		i = (i+1) % 4;
+		Concurrent.Thread.sleep(1000);
+	}
+});
+
+//時間がかかりそうな計算をする（別スレッド化された）関数
+var fibonacci = Concurrent.Thread.compile(function(x){
+	function fib ( n ) {
+		return n <= 1  ?  1  :  fib(n-2) + fib(n-1);
+	}
+	var arr = new Array();
+	for ( var i=0;  i < x;  i++ ) arr.push(fib(i));
+	return arr;
+});
+
+//メインスレッド．
+var main_t = Concurrent.Thread.create(function(){
+	var calc_t = fibonacci.async(null, [1000]);  //計算スレッドを引数1000で開始
+	var result = calc_t.join();                  //計算が終わるのを待つ
+	ui_t.kill();                                 //バーを回していたスレッドを停止
+	focument.body.innerHTML = "Now calculating...finised.<br>\n";
+	for ( var i=0;  i < result.length;  i++ ) {
+		document.body.innerHTML += i + ": " + result[i] + "<br>\n";
+	}
+});
+
+</script>
+</body>
+
+
+<a href="#" onclick="alert('cc')">aaafa</a>
+</html>

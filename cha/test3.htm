@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+<meta charset="UTF-8">
+<title>test</title>
+<style type="text/css">
+body {
+font-size: 12px;
+}
+#cv {
+border: solid 1px #333;
+}
+</style>
+</head><body>
+<canvas id="cv" width="300" height="240"></canvas>
+<script>
+var canvas = document.getElementById("cv"),
+	ctx = canvas.getContext("2d"),
+	img = new Image();
+
+img.src = "images/head.png";
+
+function show() {
+	// 正常?片
+	ctx.drawImage(img, 10, 10);
+
+	// 水平翻?
+	ctx.translate(300, 0);
+	ctx.scale(-1, 1);
+	// 下面画的?片是水平翻?的
+	ctx.drawImage(img, 300 - img.width - 10, 60);
+	// 恢?正常
+	ctx.translate(300, 0);
+	ctx.scale(-1, 1);
+
+	// 下面的?片是正常的
+	ctx.drawImage(img, 10, 110);
+
+
+	// ?外一?水平翻??片的方法
+	show2();
+}
+
+function show2() {
+	// ?一?水平翻?的方法
+
+	// 先画一个正常的画片
+	var px = 10,
+		py = 160;
+
+	ctx.drawImage(img, px, py);
+
+	// 取得?个?片的数据，?片与当前?面必?同域，否?会出?
+	var img_data = ctx.getImageData(px, py, img.width, img.height),
+
+		x, y, p, i, i2, t,
+		h = img_data.height;
+		w = img_data.width,
+		w_2 = w / 2;
+
+	// 将 img_data 的数据水平翻?
+	for (y = 0; y < h; y ++) {
+		for (x = 0; x < w_2; x ++) {
+			i = (y<<2) * w + (x<<2);
+			i2 = ((y + 1) << 2) * w - ((x + 1) << 2);
+			for (p = 0; p < 4; p ++) {
+				t = img_data.data[i + p];
+				img_data.data[i + p] = img_data.data[i2 + p];
+				img_data.data[i2 + p] = t;
+			}
+		}
+	}
+
+	// 重?水平翻?后的?片
+	ctx.putImageData(img_data, px, py);
+}
+
+img.onload = function () {
+	show2();
+};
+</script>
+
+</body></html>

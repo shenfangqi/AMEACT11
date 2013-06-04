@@ -1,0 +1,57 @@
+<html>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<head>
+
+<script type="text/javascript" src="./jOrbital/jquery-1.5.1.js"></script>
+<script type="text/javascript" src="./jOrbital/jquery.jorbital.js"></script>
+
+<style type="text/css">
+	img { border:0 }
+
+	a { color:#c00 }
+
+	#news { text-align:left; margin:auto; padding-top:150px; width:728px; }
+	.clear { clear:both }
+	.share-button { margin:auto; background:#eee; padding:2px 8px; border:1px solid #fff;
+		border-radius:6px; box-shadow:0 2px 2px #aaa; width:100px;
+		-moz-border-radius:6px; -moz-box-shadow:0 2px 2px #aaa;
+		-webkit-border-radius:6px; -webkit-box-shadow:0 2px 2px #aaa; }
+	.share-button:hover{ background:#fff }
+	.orbit { background-color:rgba(0,0,0,0.4); border:2px solid #888;
+	border-radius:200px; -moz-border-radius:200px;  -webkit-border-radius:200px;  }
+	.orbit { background-image:url('../ietrans.gif') }
+	.orbit a:hover { background:rgba(255,255,255,0.6); }
+	.orbit a { padding:8px;
+		border-radius:32px; -moz-border-radius:32px; -webkit-border-radius:32px;}
+</style>
+
+
+<script type="text/javascript">
+	$( function() {
+
+		$(".share-button").jOrbital({ inDuration:300, radius:1.5 });
+
+	});
+</script>
+
+</head>
+
+<body>
+
+
+
+<div id="news">
+	<div id="ggg" class="share-button">
+		<div class="orbit">
+			<a href="#"><img src="./jOrbital/digg.png" /></a>
+			<a href="#"><img src="./jOrbital/delicious.png" /></a>
+			<a href="javascript:setFa()"><img src="./jOrbital/facebook.png" /></a>
+			<a href="#"><img src="./jOrbital/twitter.png" /></a>
+			<a href="#"><img src="./jOrbital/technorati.png" /></a>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+
+</body>
+</html>

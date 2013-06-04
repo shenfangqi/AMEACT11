@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<meta name="viewport" content="width=device-width,initial-scale=0.5,minimum-scale=0.5,maximum-scale=0.5">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+
+
+<head>
+    <title></title>
+    <link href="a4.css" rel="stylesheet" type="text/css" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+    <script src="entry/scroller/sfq-touch-scroll.js"></script>
+    <script src="./sfqKannJiSliper.js"></script>
+
+    <script language="javascript">
+      var selected;
+      function ajustOrientation() {
+           var orientation = window.orientation;
+           if(orientation ==0)
+               setHorizon();
+           else if(orientation ==90)
+               setVertical();
+           window.setTimeout(function() { window.top.scrollTo(0,1);} , 100);
+      }
+
+      function setHorizon() {
+           document.getElementById("container").className="container1";
+           document.getElementById("ctrl").className="ctrl1";
+           document.getElementById("maincontent").className="maincontent1";
+           $.fn.sfqTouchSlider.horizon(630,436);
+/*
+           $('nav').sfqTouchSlider({
+           			item: 'div.item',
+            	    hideClass: 'mt-hidden',
+   	                activeClass: 'active',
+   	                t_width:600,
+   	                t_height:400,
+   	                t_left:10,
+   	                t_top:30
+	       });
+*/
+      }
+
+      function setVertical() {
+           document.getElementById("container").className="container2";
+           document.getElementById("ctrl").className="ctrl2";
+           document.getElementById("maincontent").className="maincontent2";
+           $.fn.sfqTouchSlider.vertical(752,436);
+
+           $('nav').sfqTouchSlider({
+           			item: 'div.item',
+            	    hideClass: 'mt-hidden',
+   	                activeClass: 'active',
+   	                t_width:640,
+   	                t_height:400,
+   	                t_left:10,
+   	                t_top:0
+	       });
+
+      }
+
+      function cancelMoving(e) {
+           e.preventDefault();
+      }
+
+      function vertAlign(pImg) {
+            var lHeight = pImg.clientHeight;
+            var lParentHeight = pImg.parentNode.clientHeight;
+            pImg.style.marginTop = (lParentHeight - lHeight)/2 + "px";
+      }
+
+     function blockMove(event)  {
+            event.preventDefault();
+     }
+
+     function setRot(str)  {
+           document.ontouchmove = blockMove;
+           $("#container").css("display","none");
+           $("#main_ctrl").css("display","none");
+           $("#rot_ctrl").css("display","");
+
+           $('rot').css("display","");
+           $('rot').html(str);
+	       $(document).ready(function() {
+	   	      $('rot').sfqKannJiSliper();
+	       });
+     }
+
+     function kaki()  {
+           $("#word").html(selected);
+           $("#container").css("display","none");
+           $("#main_ctrl").css("display","none");
+           $("#rot_ctrl").css("display","none");
+           $("#kaki_ctrl").css("display","");
+           $("rot").css("display","none");
+           $("#canvas-wrap").css("display","");
+     }
+
+      //ajustOrientation();
+    </script>
+
+
+</head>
+
+
+
+<body>
+
+<div id="canvas-wrap" style="text-align:left;z-index:99;display:none">
+     <div id="content">
+  	 <div id="cover"></div>
+	 <div id="main">
+		<canvas id="myCanvas"></canvas>
+		<div id="wrapper">
+			<div id="tools">
+				<div id="penType">
+					<div id="line"><img src="http://turunto.6.ql.bz/colorp/img/line.png" alt="line" width="50" height="42" /></div>
+				</div>
+				<div id="penWidth">
+					<div id="five"></div>
+					<div id="ten"></div>
+					<div id="twen"></div>
+				</div>
+				<div id="undo"><img src="http://turunto.6.ql.bz/colorp/img/back.png" alt="undo" width="51" height="25" /></div>
+			</div>
+		</div>
+	 </div>
+   </div>
+
+</div>
+
+
+<rot style="background-color:#e0e0e0;display:none;">
+鯖鮪馬
+</rot>
+
+<div id="container">
+        <div id="nav">nav</div>
+<!--
+        <div id="avatar">
+            <div class="sprite" style="zoom:1.5;z-index:1;left:8px;top:2px;position: absolute;">
+                <canvas id="canvas" width="100px" height="180px"></canvas>
+            </div>
+        </div>
+        <div id="ctrl"  style="position:absolute;left:300px;top:100px; ;height:200px;">
+             <button type="button" name="" value="" class="css3button1">Items</button>
+             <button type="button" name="" value="" class="css3button1">Fittings</button>
+             <button type="button" name="" value="" class="css3button2">Faces</button>
+             <button type="button" name="" value="" class="css3button3">Save&nbsp;</button>
+        </div>
+-->
+        <div class="clearfloat"></div>
+        <div id="maincontent" style="position:absolute;left:0px;top:60px;width:640px; height:460px;overflow:auto; zoom:1;margin-bottom:8px">
+
+		<section>
+			<nav>
+              <lay>
+    <table border=0>
+       <tr>
+          <td><div class='box'>鯖</div></td>
+          <td><div class='box'>馬</div></td>
+          <td><div class='box'>日</div></td>
+          <td><div class='box'>火</div></td>
+          <td><div class='box'>人</div></td>
+       </tr>
+
+       <tr>
+          <td><div class='box'>川</td>
+          <td><div class='box'>空</div></td>
+          <td><div class='box'>草</div></td>
+          <td><div class='box'>雲</div></td>
+          <td><div class='box'>花</div></td>
+       </tr>
+
+       <tr>
+          <td><div class='box'>木</div></td>
+          <td><div class='box'>湖</div></td>
+          <td><div class='box'>海</div></td>
+          <td><div class='box'>鳥</div></td>
+          <td><div class='box'>気</div></td>
+       </tr>
+
+       <tr>
+          <td><div class='box'>赤</div></td>
+          <td><div class='box'>緑</div></td>
+          <td><div class='box'>白</div></td>
+          <td><div class='box'>黒</div></td>
+          <td><div class='box'>黄</div></td>
+       </tr>
+
+       <tr>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+       </tr>
+
+       <tr>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+       </tr>
+
+       <tr>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+       </tr>
+
+       <tr>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+       </tr>
+
+       <tr>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+          <td><div class='box'>&nbsp;</div></td>
+       </tr>
+     </table>
+			  </lay>
+			</nav>
+		</section>
+
+        </div>
+
+</div>
+
+<div id="main_ctrl" style="position:relative;left:0px;top:520px">
+       <div align="right">
+           <button id="clear" style="font-size:25px">クリア</button>
+       </div>
+
+      <div>
+          <hr>
+      </div>
+
+      <div align="center">
+         <button id="start" style="font-size:25px">Start</button>
+      </div>
+</div>
+
+<div id="rot_ctrl" style="position:relative;left:0px;top:600px;display:none">
+      <table width="100%" border=1>
+          <tr>
+              <td align="left"><button id="modo" style="font-size:35px;z-index:9999">戻る</button></td>
+              <td align="right"><button id="kaki" style="font-size:35px;z-index:9999">なぞり書き</button></td>
+          </tr>
+      </table>
+</div>
+
+<div id="kaki_ctrl" style="position:obsolute;left:0px;top:600px;display:none">
+      <table width="100%" border=1>
+          <tr>
+              <td align="center"><button id="modo1" style="font-size:35px;z-index:9999">戻る</button></td>
+          </tr>
+      </table>
+</div>
+
+
+</body>
+
+<script language="javascript">
+
+document.getElementById("nav").ontouchmove=cancelMoving;
+
+$(document).ready(function() {
+	$('nav').sfqTouchSlider({
+    			item: 'div.item',
+    			hideClass: 'mt-hidden',
+    			activeClass: 'active',
+    			t_width:630,
+    			t_height:436,
+    			t_left:10,
+    			t_top:10
+	});
+});
+</script>
+
+<script language="javascript">
+var selestr="";
+$(".box").click(function() {
+    //alert($(this).text());
+    //$(".box").css("background-color","#fff");
+    $(this).css("background-color","red");
+    selestr += $(this).text();
+})
+
+$("#clear").click(function() {
+    selestr = "";
+    $(".box").css("background-color","#fff");
+})
+
+$("#start").click(function() {
+    setRot(selestr);
+    //alert(selestr);
+})
+
+$("#kaki").click(function() {
+    kaki();
+})
+
+$("#modo").click(function()  {
+    document.location.href="./a4.html";
+})
+
+$("#modo1").click(function()  {
+    document.location.href="./a4.html";
+})
+
+
+<!--
+$("#moveleft").click(function() {
+   $.fn.sfqKannJiSliper.ss();
+})
+
+$("#moveright").click(function() {
+
+})
+-->
+
+</script>
+
+
+
+</html>

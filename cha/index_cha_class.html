@@ -1,0 +1,299 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=shift-jis">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <script src="jquery-ui-1.8.11/jquery-1.5.1.js" type="text/javascript"></script>
+    <script src="jquery-ext-plugins/jQueryRotateCompressed.2.1.js" type="text/javascript"></script>
+</head>
+
+<body>
+refreing to:
+http://www.zachstronaut.com/posts/2009/02/17/animate-css-transforms-firefox-webkit.html<br><br><br>
+
+<div id="lay0">
+ <canvas id="canvas" width="100" height="150"  style="z-index:1;left:100px;top:100px;position: absolute;background-color:#fff">
+ </canvas>
+</div>
+
+
+<div style="position:absolute;left:230px;top:50px">
+  <button id="drawFrame">drawFrame</button>
+</div>
+<div style="position:absolute;left:30px;top:50px">
+     <select id="bodySele">
+           <option value="5">Head</option>
+           <option value="4">Body</option>
+           <option value="1">Left Hand</option>
+           <option value="3">Right Hand</option>
+           <option value="0">Left Leg</option>
+           <option value="2">Right Leg</option>
+     </select>
+</div>
+
+<div style="position:absolute;left:250px;top:100px">
+  <button id="moveUp">u</button>
+</div>
+<div style="position:absolute;left:220px;top:130px">
+  <button id="moveLeft">l</button>
+</div>
+<div style="position:absolute;left:280px;top:130px">
+  <button id="moveRight">r</button>
+</div>
+<div style="position:absolute;left:250px;top:160px">
+  <button id="moveDown">d</button>
+</div>
+
+<div style="position:absolute;left:230px;top:210px">
+  <button id="rotLeft">l</button>
+</div>
+<div style="position:absolute;left:270px;top:210px">
+  <button id="rotRight">r</button>
+</div>
+
+
+</body>
+
+</html>
+
+
+<script language="javascript">
+$("#drawFrame").click(function() {
+   drawFrame();
+})
+
+
+
+
+/**
+ * @param {Function} subCls 子类
+ * @param {Function} superCls 父类
+ */
+function extend(subCls,superCls) {
+    //暂存子类原型
+    var sbp = subCls.prototype;
+
+    //重写子类原型--原型继承
+    subCls.prototype = new superCls();
+
+    //重写后一定要将constructor指回subCls
+    subCls.prototype.constructor = subCls;
+
+    //还原子类原型
+    for(var atr in sbp) {
+        subCls.prototype[atr] = sbp[atr];
+    }
+
+    //暂存父类
+    subCls.supr = superCls;
+}
+
+
+
+/**
+ *  父类Person
+ */
+function BasePart(bx,by,rx,ry,deg,imgfile){
+    this.baseX = bx;
+    this.baseY = by;
+    this.rotX = rx;
+    this.rotY = ry;
+    this.degree = deg;
+    this.imgfile = imgfile;
+}
+
+
+/**
+ *  子类BodyPart
+ */
+function BodyPart(bx,by,rx,ry,deg,imgfile,name) {
+    BodyPart.supr.call(this,bx,by,rx,ry,deg,imgfile); //调用父类构造器
+    this.name = name;
+    this.accessories = new Array;
+}
+
+BodyPart.prototype.getName = function() {return this.name;}
+BodyPart.prototype.drawImage = function() {
+    this.img=new Image();
+    this.img.src="images/"+this.imgfile;
+    drawSprite(this.img, this.baseX, this.baseY, this.rotX, this.rotY, this.degree);
+
+    for(var i=0;i<this.accessories.length;i++) {
+         this.accessories[i].drawImage();
+    }
+}
+BodyPart.prototype.setAccessory = function(accessory) {
+    this.accessories[this.accessories.length] = accessory;
+}
+
+/**
+ *  子类Accessories
+ */
+function Accessories(bx,by,rx,ry,deg,imgfile,name) {
+    Accessories.supr.call(this,bx,by,rx,ry,deg,imgfile); //调用父类构造器
+    this.name = name;
+}
+
+Accessories.prototype.getName = function() {return this.name;}
+Accessories.prototype.drawImage = function() {
+    this.img=new Image();
+    this.img.src="images/"+this.imgfile;
+    drawSprite(this.img, this.baseX, this.baseY, this.rotX, this.rotY, this.degree);
+}
+
+
+extend(BodyPart,BasePart);
+extend(Accessories,BasePart);
+
+
+var baseX=20;
+var baseY=20;
+
+var thisX;
+var thisY;
+var thisRotX;
+var thisRotY;
+var thisDeg;
+
+
+//--------draw left leg and accessories-//
+
+thisX = baseX + 18;
+thisY = baseY + 78;
+thisRotX = thisX + 9;
+thisRotY = thisY;
+thisDeg = 0;
+
+var lLegPart = new BodyPart(thisX,thisY,thisRotX,thisRotY,thisDeg,'lLeg.png','lLeg');
+
+var lLegAcsy1 = new Accessories(thisX-3,thisY+13,thisRotX,thisRotY,thisDeg,'shoes.png','lShoes');
+
+lLegPart.setAccessory(lLegAcsy1);
+
+
+
+
+//----------draw left hand -------------//
+
+thisX = baseX + 7;
+thisY = baseY + 57;
+thisRotX = thisX + 20;
+thisRotY = thisY;
+thisDeg = 0;
+
+var lHandPart = new BodyPart(thisX,thisY,thisRotX,thisRotY,thisDeg,'lHand.png','lHand');
+
+
+
+//----------draw body -------------//
+
+thisX = baseX + 20;
+thisY = baseY + 57;
+thisRotX = thisX + 12;
+thisRotY = thisY;
+thisDeg = 0;
+
+var sbody = new BodyPart(thisX,thisY,thisRotX,thisRotY,thisDeg,'body.png','body');
+
+
+//--------draw right leg and accessories-//
+
+thisX = baseX + 27;
+thisY = baseY + 82;
+thisRotX = thisX + 9;
+thisRotY = thisY;
+thisDeg = 0;
+
+var rLegPart = new BodyPart(thisX,thisY,thisRotX,thisRotY,thisDeg,'rLeg.png','rLeg');
+var rLegAcsy1 = new Accessories(thisX-2,thisY+13,thisRotX,thisRotY,thisDeg,'shoes.png','rShoes');
+
+rLegPart.setAccessory(rLegAcsy1);
+
+
+
+
+//----------draw right hand -------------//
+
+thisX = baseX + 34;
+thisY = baseY + 58;
+thisRotX = thisX + 2;
+thisRotY = thisY + 2;
+thisDeg = 0;
+
+var rHandPart = new BodyPart(thisX,thisY,thisRotX,thisRotY,thisDeg,'rHand.png','rHand');
+
+
+//----------draw head -------------//
+
+thisX = baseX;
+thisY = baseY;
+thisRotX = thisX + 32
+thisRotY = thisY + 57;
+thisDeg = 0;
+
+var shead = new BodyPart(thisX,thisY,thisRotX,thisRotY,thisDeg,'head.png','head');
+
+
+
+
+
+
+
+
+function drawFrame() {
+    lLegPart.drawImage();
+    lHandPart.drawImage();
+    sbody.drawImage();
+    rLegPart.drawImage();
+    rHandPart.drawImage();
+    shead.drawImage();
+}
+
+
+
+
+function drawSprite(spriteImg,px,py,axis_px,axis_py,degree) {
+    var ctx = document.getElementById('canvas').getContext('2d');
+    //var div=new Image();
+    //div.src="images/head.png";
+
+    var deg=degree;
+
+    sin_val =Math.sin(deg * (Math.PI / 180));
+    cos_val =Math.cos(deg * (Math.PI / 180));
+
+    //should be the origin point of the item to be displayed on the canvas.
+    var origin_px=px;
+    var origin_py=py;
+
+    //should be the axis point which the whole item turn around by
+    var x1=axis_px;
+    var y1=axis_py;
+
+    //formula of get a target point(x',y') position while a point turn around by a ARC degree by a axis point(x,y)
+    //x'=(x-a)cosc-(y-b)sinc+a
+    //y'=(y-b)cosc+(x-a)sinc+b
+
+    x2=(x1-origin_px)*cos_val - (y1-origin_py)*sin_val + origin_px ;
+    y2=(y1-origin_py)*cos_val + (x1-origin_px)*sin_val + origin_py ;
+
+    var off_x=parseInt(x2)-x1;
+    var off_y=parseInt(y2)-y1;
+
+    var target_px = parseInt(origin_px + 64-sin_val*64);
+    var target_py = parseInt(origin_py - cos_val*64);
+
+    //ctx.save();
+    //ctx.drawImage(div, 180, 180);
+    //ctx.restore();
+
+    ctx.save();
+    ctx.translate(origin_px-off_x,origin_py-off_y);   //200: 180 + 64-(sin(45)*64)     135: 180 - (cos(45)*64)
+    ctx.rotate(deg * (Math.PI / 180));
+    ctx.drawImage(spriteImg, 0, 0);
+    //ctx.drawImage(o.spritesheet.image, o.frame * o.spritesheet.offsetw, 0, o.w, o.h, -o.w/2, -o.h/2, o.w, o.h);
+    ctx.restore();
+}
+
+
+
+</script>

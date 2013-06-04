@@ -1,0 +1,845 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=shift-jis">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <script src="jquery-ui-1.8.11/jquery-1.5.1.js" type="text/javascript"></script>
+    <script src="jquery-ext-plugins/jQueryRotateCompressed.2.1.js" type="text/javascript"></script>
+    <script src="body_preload.js" type="text/javascript"></script>
+</head>
+
+<body>
+refreing to:
+http://www.zachstronaut.com/posts/2009/02/17/animate-css-transforms-firefox-webkit.html<br><br><br>
+<a href="skype:echo123?call">sss</a>
+
+<div id="lay0">
+ <canvas id="canvas" width="120" height="180"  style="z-index:1;left:100px;top:100px;position: absolute;background-color:#fff">
+ </canvas>
+</div>
+
+
+<div style="position:absolute;left:230px;top:50px">
+  <button id="Mirror">Mirror</button>
+</div>
+
+<div style="position:absolute;left:330px;top:50px">
+  <button id="getPOS">getPOS</button>
+</div>
+<div style="position:absolute;left:330px;top:75px">
+  <button id="clsPOS">clsPOS</button>
+</div>
+
+
+<div style="position:absolute;left:430px;top:50px">
+  <textarea  id="posinfo"></textarea><button id="setPOS">setPOS</button>
+</div>
+
+<div style="position:absolute;left:30px;top:50px">
+     <select id="bodySele">
+           <option value="5">Head</option>
+           <option value="4">Body</option>
+           <option value="1">Left Hand</option>
+           <option value="3">Right Hand</option>
+           <option value="0">Left Leg</option>
+           <option value="2">Right Leg</option>
+     </select>
+</div>
+
+<div style="position:absolute;left:250px;top:100px">
+  <button id="moveUp">u</button>
+</div>
+<div style="position:absolute;left:220px;top:130px">
+  <button id="moveLeft">l</button>
+</div>
+<div style="position:absolute;left:280px;top:130px">
+  <button id="moveRight">r</button>
+</div>
+<div style="position:absolute;left:250px;top:160px">
+  <button id="moveDown">d</button>
+</div>
+
+<div style="position:absolute;left:230px;top:210px">
+  <button id="rotLeft">l</button>
+</div>
+<div style="position:absolute;left:270px;top:210px">
+  <button id="rotRight">r</button>
+</div>
+
+
+</body>
+
+</html>
+
+
+<script language="javascript">
+//Dir definition
+var LD = 0;
+var LU = 1;
+var RD = 2;
+var RU = 3;
+
+//Skin definition
+var RED = 0;
+var WHITE = 1;
+var YELLOW = 2;
+
+//Body definition
+var BODY = 0;
+var HEAD = 1;
+var L_ARM1 = 2;
+var L_ARM2 = 3;
+var R_ARM1 = 4;
+var R_ARM2 = 5;
+var L_LEG = 6;
+var R_LEG = 7;
+
+//Accessesory definition
+var BAGS = 0;
+var COAT = 1;
+var EYES = 2;
+var HAIR = 3;
+var MOUTH = 4;
+var MUSTACHE = 5;
+var NOSE = 6;
+var PANT = 7;
+var SHOES = 8;
+
+
+$("#Mirror").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.invert();
+   hm.drawFrame();
+})
+
+$("#clsPOS").click(function() {
+   $("#posinfo").val("");
+})
+
+$("#getPOS").click(function() {
+   var s = hm.getPOS();
+   var vl = $("#posinfo").val();
+   $("#posinfo").val(vl+"||"+s);
+})
+
+$("#setPOS1").click(function() {
+   alert($("#posinfo").val());
+   hm.setPOS($("#posinfo").val());
+   hm.drawFrame();
+})
+
+$("#setPOS").click(function() {
+   var ans = $("#posinfo").val().substring(2);
+   hm.animator(ans);
+})
+
+$("#moveUp").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.moveUP();
+   hm.drawFrame();
+})
+
+$("#moveDown").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.moveDOWN();
+   hm.drawFrame();
+})
+
+$("#moveLeft").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.moveLEFT();
+   hm.drawFrame();
+})
+
+$("#moveRight").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.moveRIGHT();
+   hm.drawFrame();
+})
+
+$("#rotRight").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.rotRIGHT();
+   hm.drawFrame();
+})
+
+$("#rotLeft").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.rotLEFT();
+   hm.drawFrame();
+})
+
+
+/**
+ * @param {Function} subCls ﾗﾓﾀ�
+ * @param {Function} superCls ｸｸﾀ�
+ */
+function extend(subCls,superCls) {
+    //ﾔﾝｴ贐ﾓﾀ獪ｭﾐﾍ
+    var sbp = subCls.prototype;
+
+    //ﾖﾘﾐｴﾗﾓﾀ獪ｭﾐﾍ--ﾔｭﾐﾍｼﾌｳﾐ
+    subCls.prototype = new superCls();
+
+    //ﾖﾘﾐｴｺｻｶｨﾒｪｽｫconstructorﾖｸｻﾘsubCls
+    subCls.prototype.constructor = subCls;
+
+    //ｻｹﾔｭﾗﾓﾀ獪ｭﾐﾍ
+    for(var atr in sbp) {
+        subCls.prototype[atr] = sbp[atr];
+    }
+
+    //ﾔﾝｴ貂ｸﾀ�
+    subCls.supr = superCls;
+}
+
+
+
+/**
+ *  ｸｸﾀ澑erson
+ */
+function BasePart(bx,by,bx1,by1,rx,ry,deg,imgfile,name,orient){
+    this.baseX = bx;
+    this.baseY = by;
+    this.rotX = rx;
+    this.rotY = ry;
+    this.degree = deg;
+    this.name = name;
+    this.imgfile = imgfile;
+    this.orient = orient;
+}
+
+BasePart.prototype.UP = function() {this.baseY -=2;this.rotY -=2;}
+BasePart.prototype.DOWN = function() {this.baseY +=2;this.rotY +=2;}
+BasePart.prototype.LEFT = function() {this.baseX -=2;this.rotX -=2;}
+BasePart.prototype.RIGHT = function() {this.baseX +=2;this.rotX +=2;}
+BasePart.prototype.RotRIGHT = function() {this.degree -=10;}
+BasePart.prototype.RotLEFT = function() {this.degree +=10;}
+
+BasePart.prototype.setBasePos = function(offx,offy,deg) {
+    this.baseX +=offx;
+    this.baseY +=offy;
+    this.rotX +=offx;
+    this.rotY +=offy;
+    this.degree =deg;
+}
+
+BasePart.prototype.getBaseX = function() {return this.baseX;}
+BasePart.prototype.getBaseY = function() {return this.baseY;}
+BasePart.prototype.getDeg = function() {return this.degree;}
+BasePart.prototype.getInvert = function() {return this.orient;}
+BasePart.prototype.setInvert = function() {
+    if(this.orient=="ld")
+        this.orient="rd";
+    else if(this.orient=="rd")
+        this.orient="ld";
+    else if(this.orient=="lu")
+        this.orient="ru";
+    else if(this.orient=="ru")
+        this.orient="lu";
+}
+
+BasePart.prototype.setInvertVal = function(ot) {
+    this.orient=ot;
+}
+
+BasePart.prototype.draw = function() {
+    var dx=this.baseX;
+    var dy=this.baseY;
+    var rx=this.rotX;
+    var ry=this.rotY;
+    var dg=this.degree;
+
+    this.img=hm.ss.getBodyImg(this.orient+"_"+this.name);
+
+    if(this.orient =="rd" || this.orient =="ru") {  //image on right side is basic. if the left image then need to be inverted.
+       dx = 100-this.baseX-this.img.width;   //100 here should be changed to definable
+       rx = 100-this.rotX;
+       dg = 0 - this.degree;
+    }
+    hm.drawSprite(this.img, dx, dy, rx, ry, dg);
+}
+
+
+
+/**
+ *  ﾗﾓﾀ滷odyPart
+ */
+function BodyPart(bx,by,bx1,by1,rx,ry,deg,imgfile,name,orient) {
+    BodyPart.supr.call(this,bx,by,bx1,by1,rx,ry,deg,imgfile,name,orient); //ｵﾃｸｸﾀ犹ｹﾔ�ﾆ�
+    this.name = name;
+    this.orient = orient;
+    this.accessories = new Array;
+}
+
+BodyPart.prototype.getName = function() {return this.name;}
+BodyPart.prototype.drawImage = function() {
+    this.draw();
+    for(var i=0;i<this.accessories.length;i++) {
+         this.accessories[i].drawImage();
+    }
+}
+
+BodyPart.prototype.setAccessory = function(accessory) {
+    this.accessories[this.accessories.length] = accessory;
+}
+
+
+BodyPart.prototype.moveUP = function() {
+    this.UP();
+    for(var i=0;i<this.accessories.length;i++) {
+        this.accessories[i].UP();
+    }
+}
+
+BodyPart.prototype.moveDOWN = function() {
+    this.DOWN();
+    for(var i=0;i<this.accessories.length;i++) {
+        this.accessories[i].DOWN();
+    }
+}
+
+BodyPart.prototype.moveLEFT = function() {
+    this.LEFT();
+    for(var i=0;i<this.accessories.length;i++) {
+        this.accessories[i].LEFT();
+    }
+}
+
+BodyPart.prototype.moveRIGHT = function() {
+    this.RIGHT();
+    for(var i=0;i<this.accessories.length;i++) {
+        this.accessories[i].RIGHT();
+    }
+}
+
+BodyPart.prototype.rotRIGHT = function() {
+    this.RotRIGHT();
+    for(var i=0;i<this.accessories.length;i++) {
+        this.accessories[i].RotRIGHT();
+    }
+}
+
+BodyPart.prototype.rotLEFT = function() {
+    this.RotLEFT();
+    for(var i=0;i<this.accessories.length;i++) {
+        this.accessories[i].RotLEFT();
+    }
+}
+
+BodyPart.prototype.setBodyPos = function(bx,by,deg,orient) {
+    var offx = bx-this.baseX;
+    var offy = by-this.baseY;
+    this.setBasePos(offx,offy,deg);
+    this.setInvertVal(orient);
+    for(var i=0;i<this.accessories.length;i++) {
+        this.accessories[i].setBasePos(offx,offy,deg);
+        this.accessories[i].setInvertVal(orient);
+    }
+}
+
+BodyPart.prototype.invertBody = function() {
+    this.setInvert();
+
+    for(var i=0;i<this.accessories.length;i++) {
+        this.accessories[i].setInvert();
+    }
+}
+
+
+/**
+ *  ﾗﾓﾀ漓ccessories
+ */
+function Accessories(bx,by,bx1,by1,rx,ry,deg,imgfile,name,orient) {
+    Accessories.supr.call(this,bx,by,bx1,by1,rx,ry,deg,imgfile,name); //ｵﾃｸｸﾀ犹ｹﾔ�ﾆ�
+    this.name = name;
+    this.orient = orient;
+    //alert(this.orient+":"+bx+":"+by+":"+bx1+":"+by1);
+    if(this.orient == "lu" || this.orient == "ru") {
+       this.baseX = bx1;
+       this.baseY = by1;
+    }
+}
+
+Accessories.prototype.getName = function() {return this.name;}
+Accessories.prototype.drawImage = function() {
+    this.draw();
+}
+
+extend(BodyPart,BasePart);
+extend(Accessories,BasePart);
+
+
+function createTwoDimensionArray(kv,m)  {
+   var arr=new Array(kv.length);for(var i=0;i<kv.length;i++){arr[kv[i]]=new Array(m);}return arr;
+}
+
+
+function bodyPos() {
+   //watch the order
+   var bodyArr = ["lLeg","lHand","body","rLeg","rHand","head"];
+   this.pos_arr_up = createTwoDimensionArray(bodyArr,4);
+   this.pos_arr_dn = createTwoDimensionArray(bodyArr,4);
+   this.up_dn_offset = createTwoDimensionArray([0,1,2,3,4,5],2)
+
+   this.pos_arr_dn["lLeg"]["bx_off"]=15;   //baseX: value is the offset from canvas origin postion
+   this.pos_arr_dn["lLeg"]["by_off"]=82;
+   this.pos_arr_dn["lLeg"]["rx_off"]=9;    //rotateX: value is the offset from baseX,use for rotation
+   this.pos_arr_dn["lLeg"]["ry_off"]=0;
+
+   this.pos_arr_dn["lHand"]["bx_off"]=9;
+   this.pos_arr_dn["lHand"]["by_off"]=59;
+   this.pos_arr_dn["lHand"]["rx_off"]=20;
+   this.pos_arr_dn["lHand"]["ry_off"]=0;
+
+   this.pos_arr_dn["body"]["bx_off"]=20;
+   this.pos_arr_dn["body"]["by_off"]=57;
+   this.pos_arr_dn["body"]["rx_off"]=12;
+   this.pos_arr_dn["body"]["ry_off"]=0;
+
+   this.pos_arr_dn["rLeg"]["bx_off"]=26;
+   this.pos_arr_dn["rLeg"]["by_off"]=80;
+   this.pos_arr_dn["rLeg"]["rx_off"]=9;
+   this.pos_arr_dn["rLeg"]["ry_off"]=0;
+
+   this.pos_arr_dn["rHand"]["bx_off"]=36;
+   this.pos_arr_dn["rHand"]["by_off"]=60;
+   this.pos_arr_dn["rHand"]["rx_off"]=2;
+   this.pos_arr_dn["rHand"]["ry_off"]=2;
+
+   this.pos_arr_dn["head"]["bx_off"]=0;
+   this.pos_arr_dn["head"]["by_off"]=0;
+   this.pos_arr_dn["head"]["rx_off"]=32;
+   this.pos_arr_dn["head"]["ry_off"]=57;
+
+
+   this.pos_arr_up["lLeg"]["bx_off"]=15;   //baseX: value is the offset from canvas origin postion
+   this.pos_arr_up["lLeg"]["by_off"]=78;
+   this.pos_arr_up["lLeg"]["rx_off"]=9;    //rotateX: value is the offset from baseX,use for rotation
+   this.pos_arr_up["lLeg"]["ry_off"]=0;
+
+   this.pos_arr_up["lHand"]["bx_off"]=9;
+   this.pos_arr_up["lHand"]["by_off"]=59;
+   this.pos_arr_up["lHand"]["rx_off"]=20;
+   this.pos_arr_up["lHand"]["ry_off"]=0;
+
+   this.pos_arr_up["body"]["bx_off"]=20;
+   this.pos_arr_up["body"]["by_off"]=57;
+   this.pos_arr_up["body"]["rx_off"]=12;
+   this.pos_arr_up["body"]["ry_off"]=0;
+
+   this.pos_arr_up["rLeg"]["bx_off"]=26;
+   this.pos_arr_up["rLeg"]["by_off"]=85;
+   this.pos_arr_up["rLeg"]["rx_off"]=9;
+   this.pos_arr_up["rLeg"]["ry_off"]=0;
+
+   this.pos_arr_up["rHand"]["bx_off"]=36;
+   this.pos_arr_up["rHand"]["by_off"]=60;
+   this.pos_arr_up["rHand"]["rx_off"]=2;
+   this.pos_arr_up["rHand"]["ry_off"]=2;
+
+   this.pos_arr_up["head"]["bx_off"]=0;
+   this.pos_arr_up["head"]["by_off"]=2;
+   this.pos_arr_up["head"]["rx_off"]=32;
+   this.pos_arr_up["head"]["ry_off"]=57;
+
+   this.up_dn_offset[0][0]= this.pos_arr_up["lLeg"]["bx_off"] - this.pos_arr_dn["lLeg"]["bx_off"];
+   this.up_dn_offset[0][1]= this.pos_arr_up["lLeg"]["by_off"] - this.pos_arr_dn["lLeg"]["by_off"];
+
+   this.up_dn_offset[1][0]= this.pos_arr_up["lHand"]["bx_off"] - this.pos_arr_dn["lHand"]["bx_off"];
+   this.up_dn_offset[1][1]= this.pos_arr_up["lHand"]["by_off"] - this.pos_arr_dn["lHand"]["by_off"];
+
+   this.up_dn_offset[2][0]= this.pos_arr_up["body"]["bx_off"] - this.pos_arr_dn["body"]["bx_off"];
+   this.up_dn_offset[2][1]= this.pos_arr_up["body"]["by_off"] - this.pos_arr_dn["body"]["by_off"];
+
+   this.up_dn_offset[3][0]= this.pos_arr_up["rLeg"]["bx_off"] - this.pos_arr_dn["rLeg"]["bx_off"];
+   this.up_dn_offset[3][1]= this.pos_arr_up["rLeg"]["by_off"] - this.pos_arr_dn["rLeg"]["by_off"];
+
+   this.up_dn_offset[4][0]= this.pos_arr_up["rHand"]["bx_off"] - this.pos_arr_dn["rHand"]["bx_off"];
+   this.up_dn_offset[4][1]= this.pos_arr_up["rHand"]["by_off"] - this.pos_arr_dn["rHand"]["by_off"];
+
+   this.up_dn_offset[5][0]= this.pos_arr_up["head"]["bx_off"] - this.pos_arr_dn["head"]["bx_off"];
+   this.up_dn_offset[5][1]= this.pos_arr_up["head"]["by_off"] - this.pos_arr_dn["head"]["by_off"];
+}
+
+
+bodyPos.prototype.getInitalPos = function(orient,bid) {
+   if(orient=="ru"||orient=="lu")
+      return this.pos_arr_up[bid];
+   else if(orient=="rd"||orient=="ld")
+      return this.pos_arr_dn[bid];
+}
+
+bodyPos.prototype.getUpDnOffset = function() {
+   return this.up_dn_offset;
+}
+
+
+/*
+protocal:  llegimg
+                  _ac1img:offx:offy
+                  _ac2img:offx:offy
+           ||lhandimg
+                    _ac1img:offx:offy
+                    _ac2img:offx:offy
+           ||bodyimg
+                    _ac1img:offx:offy
+                    _ac2img:offx:offy
+....
+
+eg:    lLeg_shoes:-3:13||lHand||body||rLeg_shoes:-2:13||rHand||head
+*/
+function human(orient) {
+    var baseX=20;
+    var baseY=20;
+
+    var thisX_dn;
+    var thisY_dn;
+    var thisX_up;
+    var thisY_up;
+    var thisRotX;
+    var thisRotY;
+    var thisDeg;
+
+    var selected_body;
+
+    //watch the order
+    //var inistr = "1||1||lLeg_shoes:1:15||lHand||body||rLeg_shoes:2:23||rHand||head";  //accesory should define the offset to the attached body part
+    var inistr = "1||1||lLeg_shoes:1:15:1:23||lHand||body||rLeg_shoes:2:23:0:15||rHand||head";  //accesory should define the offset to the attached body part
+
+    var base_pos = new bodyPos();
+    this.dn_up_off = base_pos.getUpDnOffset(); //the offset synconize the up images to down images. to make sure that up and down can use the same images.
+
+    this.overlap_order_dn = [0,1,2,3,4,5];
+    this.overlap_order_up = [3,0,4,2,1,5];  //ｶｨﾒ蟶ｿﾎｻｵﾄﾏﾔﾊｾﾋｳﾐｬｳ､ｶﾈｱﾘﾐ�ﾊﾇｲｿﾎｻｵﾄﾊﾁｿ｡｣ｶﾔﾓｦｵﾄｲｿﾎｻｲﾎｿｼinistrｵﾄ｡ｰ||｡ｱﾋｳﾐ�
+
+    this.humanObj = [];
+    this.loadedImg = [];
+    this.aniArr = [];
+    this.aniPoint = 0;
+    this.orient = orient;
+
+    this.px = 0;
+    this.py = 0;
+    this.ss = null;
+
+    var inistr_split = inistr.split("||");
+    for(var i=2;i<inistr_split.length;i++) {
+        var body_item_split = inistr_split[i].split("_");
+        var body_part_img_name = body_item_split[0];
+        var body_item_pos = base_pos.getInitalPos(orient,body_part_img_name);
+
+        thisX_dn = baseX + body_item_pos["bx_off"];
+        thisY_dn = baseY + body_item_pos["by_off"];
+        thisX_up = thisX_dn;  //0:lleg 1:lhand 2:body etc..
+        thisY_up = thisY_dn;
+
+        thisRotX = thisX_dn + body_item_pos["rx_off"];
+        thisRotY = thisY_dn + body_item_pos["ry_off"];
+
+        thisDeg = 0;
+        // for body part, upper part is calculated from down part, so the up postion can be set to 0
+        var tp = new BodyPart(thisX_dn,thisY_dn,0,0,thisRotX,thisRotY,thisDeg,body_part_img_name+'.png',body_part_img_name,orient);
+
+        for(var j=1;j<body_item_split.length;j++)  {
+             var ac_item = body_item_split[j].split(":");
+             var ac_img_name = ac_item[0];
+             var ac_baseX_dn = thisX_dn + parseInt(ac_item[1]);
+             var ac_baseY_dn = thisY_dn + parseInt(ac_item[2]);
+             var ac_baseX_up = thisX_up + parseInt(ac_item[3]);
+             var ac_baseY_up = thisY_up + parseInt(ac_item[4]);
+             var ac = new Accessories(ac_baseX_dn,ac_baseY_dn,ac_baseX_up,ac_baseY_up,thisRotX,thisRotY,thisDeg,ac_img_name+'.png',ac_img_name,orient);
+             tp.setAccessory(ac);
+        }
+
+        this.humanObj[this.humanObj.length] = tp;
+    }
+
+    this.loadRes();
+}
+
+human.prototype.setOrient = function(val) {
+    this.orient = val;
+}
+
+human.prototype.loadRes1 = function() {
+//    var inistr = "lLeg_8001:1:15||lHand||body||rLeg_8001:2:23||rHand||head";  //accesory should define the offset to the attached body part
+
+    var dirLD = "images/LD/";
+    var dirRD = "images/RD/";
+    var dirLU = "images/LU/";
+    var dirRU = "images/RU/";
+
+    var dir = dirLD;
+    var img_arr_ld = [dir+"lLeg.png",dir+"shoes.png",dir+"lHand.png",dir+"body.png",dir+"rLeg.png",dir+"shoes.png",dir+"rHand.png",dir+"h1/head.png"];
+    dir = dirRD;
+    var img_arr_rd = [dir+"lLeg.png",dir+"shoes.png",dir+"lHand.png",dir+"body.png",dir+"rLeg.png",dir+"shoes.png",dir+"rHand.png",dir+"h1/head.png"];
+    dir = dirLU;
+    var img_arr_lu = [dir+"lLeg.png",dir+"shoes.png",dir+"lHand.png",dir+"body.png",dir+"rLeg.png",dir+"shoes.png",dir+"rHand.png",dir+"h1/head.png"];
+    dir = dirRU;
+    var img_arr_ru = [dir+"lLeg.png",dir+"shoes.png",dir+"lHand.png",dir+"body.png",dir+"rLeg.png",dir+"shoes.png",dir+"rHand.png",dir+"h1/head.png"];
+
+    this.ss = new ImagePreloader(img_arr_ld,img_arr_rd,img_arr_lu,img_arr_ru,this.ss1);
+}
+
+human.prototype.loadRes = function() {
+    var inistr = "1||1||lLeg_shoes:1:15||lHand||body||rLeg_shoes:2:23||rHand||head";  //accesory should define the offset to the attached body part
+
+    var img_arr_ld =[];
+    var img_arr_rd =[];
+    var img_arr_lu =[];
+    var img_arr_ru =[];
+
+    var inistr_split = inistr.split("||");
+    var headNo = inistr_split[0];
+    var bodyNo = inistr_split[1];
+
+    for(var i=2;i<inistr_split.length;i++) {
+        var body_item_split = inistr_split[i].split("_");
+        var body_part_img_name = body_item_split[0];
+
+        if(i==7) {   //ｸﾝheadNo ﾅﾐｶﾏｵｱﾇｰﾓﾃｻｧｵﾄﾍｷﾐﾍ
+           img_arr_ld.push("res/human/LD/h"+headNo+"/"+body_part_img_name+".png");
+           img_arr_rd.push("res/human/RD/h"+headNo+"/"+body_part_img_name+".png");
+           img_arr_lu.push("res/human/LU/h"+headNo+"/"+body_part_img_name+".png");
+           img_arr_ru.push("res/human/RU/h"+headNo+"/"+body_part_img_name+".png");
+        }
+        else if(i==4) {  //ｸﾝbodyNo ﾅﾐｶﾏｵｱﾇｰﾄﾐﾅｮﾌ衵ﾍ
+           img_arr_ld.push("res/human/LD/b"+bodyNo+"/"+body_part_img_name+".png");
+           img_arr_rd.push("res/human/RD/b"+bodyNo+"/"+body_part_img_name+".png");
+           img_arr_lu.push("res/human/LU/b"+bodyNo+"/"+body_part_img_name+".png");
+           img_arr_ru.push("res/human/RU/b"+bodyNo+"/"+body_part_img_name+".png");
+        } else {
+           img_arr_ld.push("res/human/LD/"+body_part_img_name+".png");
+           img_arr_rd.push("res/human/RD/"+body_part_img_name+".png");
+           img_arr_lu.push("res/human/LU/"+body_part_img_name+".png");
+           img_arr_ru.push("res/human/RU/"+body_part_img_name+".png");
+        }
+
+        for(var j=1;j<body_item_split.length;j++)  {
+             var ac_item = body_item_split[j].split(":");
+             var ac_img_name = ac_item[0];
+             img_arr_ld.push("res/human/LD/"+ac_img_name+".png");
+             img_arr_rd.push("res/human/RD/"+ac_img_name+".png");
+             img_arr_lu.push("res/human/LU/"+ac_img_name+".png");
+             img_arr_ru.push("res/human/RU/"+ac_img_name+".png");
+        }
+    }
+
+    this.ss = new ImagePreloader(img_arr_ld,img_arr_rd,img_arr_lu,img_arr_ru,this.ss1);
+}
+
+
+//18:78:0_7:57:0_20:57:0_27:82:0_34:58:0_0:0:0
+human.prototype.setPOS = function(actStr) {
+    //var actStr="38:98:0:ld_27:77:0:ld_40:77:0:ld_47:102:0:ld_54:78:0:ld_20:20:0:ld";
+    var actStr_arr = actStr.split("_");
+
+    for(var i=0;i<actStr_arr.length;i++)  {
+        var pos_arr = actStr_arr[i].split(":");
+        var bx = parseInt(pos_arr[0]);
+        var by = parseInt(pos_arr[1]);
+        var deg = parseInt(pos_arr[2]);
+        var ot = pos_arr[3];
+
+        if(this.orient=="lu" || this.orient=="ru") {
+           ot=this.orient;
+           //ﾒｪluｵﾄbodypartﾍｼﾏﾇｴﾓldｶｴ｣ｬｵｫﾊﾇﾅﾅﾁﾐﾉﾏｸ伃dﾓﾐﾇｬﾎｪﾁﾋﾍｳﾒｻﾋ羚ｨ｣ｬﾒﾋｼﾆﾋ羌uﾍｼﾐﾎｸ伃dｵﾄoffset｣ｬﾈｻｺﾚﾉ靹ﾃﾒｻﾖ｡ｵﾄﾊｱｺﾗﾓﾃ｡｣
+           bx += this.dn_up_off[i][0];
+           by += this.dn_up_off[i][1];
+        }
+
+        if(this.orient=="rd") {
+           if(ot=="ld")
+               ot="rd";
+           else if(ot=="rd")
+               ot="ld";
+        } else if(this.orient=="ru") {
+           if(ot=="ld")
+               ot="rd";
+           else if(ot=="rd")
+               ot="ld";
+        }
+
+        this.humanObj[i].setBodyPos(bx,by,deg,ot);
+    }
+}
+
+
+human.prototype.getPOS = function(actStr) {
+    var posstr="";
+    for(var i=0;i<this.humanObj.length;i++)  {
+        var ho = this.humanObj[i];
+        posstr += ho.getBaseX() +":"+ ho.getBaseY() +":"+ ho.getDeg() +":"+ ho.getInvert() + "_";
+        //posstr += ho.getBaseX() +":"+ ho.getBaseY() +":"+ ho.getDeg() + "_";
+    }
+    return posstr.substring(0,posstr.length-1);
+}
+
+human.prototype.animator = function(aniStr) {
+    this.aniArr = aniStr.split("||");
+    hm_iID = setInterval(this.moveAni,300);
+}
+
+human.prototype.moveAni = function() {
+    var aniPos = hm.aniArr[hm.aniPoint];
+    hm.setPOS(aniPos);
+    hm.drawFrame();
+    hm.aniPoint++;
+    if(hm.aniPoint == hm.aniArr.length)
+       hm.aniPoint = 0;
+    //clearInterval(hm_iID);
+}
+
+human.prototype.setHMPos = function(px,py) {
+    this.px = px-50;
+    this.py = py-120;
+}
+
+human.prototype.drawFrame = function() {
+    var ol = [];
+    if(this.orient == "ld" || this.orient == "rd")
+       ol = this.overlap_order_dn;
+    else if(this.orient == "lu" || this.orient == "ru")
+       ol = this.overlap_order_up;
+
+    ctx.clearRect(0,0,100,150);   //canvas size
+
+    for(var i=0;i<this.humanObj.length;i++) {
+       this.humanObj[ol[i]].drawImage();
+    }
+    this.drawCircle(50,120);  //draw the base point
+}
+
+human.prototype.selectBody = function(id) {
+    if(id==1)
+       this.selected_body = this.humanObj[1];
+    if(id==2)
+       this.selected_body = this.humanObj[3];
+    if(id==3)
+       this.selected_body = this.humanObj[4];
+    if(id==4)
+       this.selected_body = this.humanObj[2];
+    if(id==5)
+       this.selected_body = this.humanObj[5];
+    if(id==0)
+       this.selected_body = this.humanObj[0];
+}
+
+human.prototype.moveUP = function(id) {
+    this.selected_body.moveUP();
+}
+human.prototype.moveDOWN = function(id) {
+    this.selected_body.moveDOWN();
+}
+human.prototype.moveLEFT = function(id) {
+    this.selected_body.moveLEFT();
+}
+human.prototype.moveRIGHT = function(id) {
+    this.selected_body.moveRIGHT();
+}
+human.prototype.rotRIGHT = function(id) {
+    this.selected_body.rotRIGHT();
+}
+human.prototype.rotLEFT = function(id) {
+    this.selected_body.rotLEFT();
+}
+human.prototype.invert = function() {
+    this.selected_body.invertBody();
+}
+
+human.prototype.drawSprite = function(spriteImg,px,py,axis_px,axis_py,degree) {
+    var deg=degree;
+    var sin_val =Math.sin(deg * (Math.PI / 180));
+    var cos_val =Math.cos(deg * (Math.PI / 180));
+
+    //should be the origin point of the item to be displayed on the canvas.
+    var origin_px=px;
+    var origin_py=py;
+
+    //should be the axis point which the whole item turn around by
+    //hm.px,hm.py is used for mirrored image rot position
+    var x1=axis_px+this.px;
+    var y1=axis_py+this.py;
+
+    //formula of get a target point(x',y') position while a point turn around by a ARC degree by a axis point(x,y)
+    //x'=(x-a)cosc-(y-b)sinc+a
+    //y'=(y-b)cosc+(x-a)sinc+b
+
+    x2=(x1-origin_px)*cos_val - (y1-origin_py)*sin_val + origin_px ;
+    y2=(y1-origin_py)*cos_val + (x1-origin_px)*sin_val + origin_py ;
+
+    var off_x=parseInt(x2)-x1;
+    var off_y=parseInt(y2)-y1;
+
+    var target_px = parseInt(origin_px + 64-sin_val*64);
+    var target_py = parseInt(origin_py - cos_val*64);
+
+    ctx.save();
+    ctx.translate(origin_px-off_x,origin_py-off_y);   //200: 180 + 64-(sin(45)*64)     135: 180 - (cos(45)*64)
+    //ctx.scale(-1, 1);
+    ctx.rotate(deg * (Math.PI / 180));
+    ctx.drawImage(spriteImg, this.px, this.py);
+    //ctx.drawImage(o.spritesheet.image, o.frame * o.spritesheet.offsetw, 0, o.w, o.h, -o.w/2, -o.h/2, o.w, o.h);
+
+    ctx.restore();
+}
+
+human.prototype.ss1 = function() {
+    hm.drawFrame();
+}
+
+human.prototype.drawCircle = function(x,y){
+    ctx.fillStyle = '#00f';
+    ctx.beginPath();
+    ctx.arc(x,y,3,0,Math.PI*2,true);
+    ctx.fill();
+}
+
+
+function show2() {
+	var img_data = ctx.getImageData(0, 0, 100, 150),
+	x, y, p, i, i2, t,
+	h = 150,
+	w = 100,
+	w_2 = w / 2;
+
+    ctx.clearRect(0,0,100,150);
+
+	for (y = 0; y < h; y ++) {
+		for (x = 0; x < w_2; x ++) {
+			i = (y<<2) * w + (x<<2);
+			i2 = ((y + 1) << 2) * w - ((x + 1) << 2);
+			for (p = 0; p < 4; p ++) {
+				t = img_data.data[i + p];
+				img_data.data[i + p] = img_data.data[i2 + p];
+				img_data.data[i2 + p] = t;
+			}
+		}
+	}
+	$("#posinfo").val(img_data.data);
+	ctx.putImageData(img_data,0,0);
+}
+
+
+
+var orient_code = 0;
+var color_code = 0;
+
+var hm_iID;
+var orient = "lu";
+var color = "yellow";
+
+var hm = new human(orient);
+hm.setHMPos(50,120);  //ﾉ靹ﾃhumanﾏﾔﾊｾｵｽｸ昱anvasﾔｲｵ羞ﾄﾏ犖ﾔﾎｻﾖﾃ｡｣   50｣ｬ120ﾎｪｻ罐ｬｱ桄ｾﾎｪﾀｶﾉｫｵﾄｵ�
+var ctx = document.getElementById('canvas').getContext('2d');
+canvas.style.border = "red 1px solid";
+
+
+</script>

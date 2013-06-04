@@ -1,0 +1,27 @@
+@charset "gb2312";
+/* CSS Document */
+
+body { 
+  margin:0 auto; font-size:12px; font-family:Verdana; line-height:1.5;}
+  ul,dl,dd,h1,h2,h3,h4,h5,h6,form,p { padding:0; margin:0;
+}
+ul { list-style:none;}
+img { border:0px;}
+a { color:#05a; text-decoration:none;}
+a:hover { color:#f00;}
+.clearfloat {clear:both;height:0;font-size: 1px;line-height: 0px;} 
+
+/*body*/
+#container { width:630px; margin:0 auto;}
+
+/*header*/
+#header {overflow:auto; zoom:1;  background:#CCFFCC; margin-bottom:8px;}
+#nav { height:60px; background:#CCFFCC; margin-bottom:8px;}
+
+/*main*/
+#maincontent { overflow:auto; zoom:1;margin-bottom:8px;background:#FFFF99;}
+#avatar { float:left; width:30%; height:170px; background:#FFFF99;}
+#ctrl { float:right; width:70%;  height:170px; background:#FFCC99;}
+
+/*footer*/
+#footer { height:30px; background:#CCFFCC;}

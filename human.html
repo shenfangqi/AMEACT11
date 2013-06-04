@@ -1,0 +1,378 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=shift-jis">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <script src="jquery-ui-1.8.11/jquery-1.5.1.js" type="text/javascript"></script>
+    <script src="cha/body_preload.js" type="text/javascript"></script>
+    <script src="cha/hm.js" type="text/javascript"></script>
+</head>
+
+<body>
+refreing to:
+http://www.zachstronaut.com/posts/2009/02/17/animate-css-transforms-firefox-webkit.html<br><br><br>
+<a href="#" onclick=javascript:hm.setDir("lu")>lu</a>
+<a href="#" onclick=javascript:hm.setDir("ru")>ru</a>
+<a href="#" onclick=javascript:hm.setDir("ld")>ld</a>
+<a href="#" onclick=javascript:hm.setDir("rd")>rd</a>
+
+<div id="lay0">
+ <canvas id="canvas" width="120" height="180"  style="z-index:1;left:100px;top:100px;position: absolute;background-color:#fff">
+ </canvas>
+</div>
+
+
+<div style="position:absolute;left:130px;top:50px">
+  <input id="anid" type="text" style="width:20px" value="0"><button id="setFrame1">+</button><button id="setFrame2">-</button>
+</div>
+
+<div style="position:absolute;left:230px;top:50px">
+  <button id="Mirror">Mirror</button>
+</div>
+
+<div style="position:absolute;left:330px;top:50px">
+  <button id="getPOS">getPOS</button>
+</div>
+<div style="position:absolute;left:330px;top:75px">
+  <button id="clsPOS">clsPOS</button>
+</div>
+<div style="position:absolute;left:330px;top:100px">
+    <input id="sx" type="text" style="width:25px" value="100"><input id="sy" type="text" style="width:25px" value="100"><button id="setPos">SP</button>
+</div>
+
+
+<div style="position:absolute;left:430px;top:50px">
+  <textarea  id="posinfo"></textarea><button id="setPOS">setPOS</button>
+</div>
+
+<!--var bodyArr = ["lLeg","lHand","lHand1","body","rLeg","rHand","rHand1","head"];-->
+
+<div style="position:absolute;left:30px;top:50px">
+     <select id="bodySele">
+           <option value="0">lLeg</option>
+           <option value="1">lArm</option>
+           <option value="2">lLimb</option>
+           <option value="3">body</option>
+           <option value="4">rLeg</option>
+           <option value="5">rArm</option>
+           <option value="6">rLimb</option>
+           <option value="7">Head</option>
+     </select>
+</div>
+
+<div style="position:absolute;left:250px;top:100px">
+  <button id="moveUp">u</button>
+</div>
+<div style="position:absolute;left:220px;top:130px">
+  <button id="moveLeft">l</button>
+</div>
+<div style="position:absolute;left:280px;top:130px">
+  <button id="moveRight">r</button>
+</div>
+<div style="position:absolute;left:250px;top:160px">
+  <button id="moveDown">d</button>
+</div>
+
+<div style="position:absolute;left:230px;top:210px">
+  <button id="rotLeft">l</button>
+</div>
+<div style="position:absolute;left:270px;top:210px">
+  <button id="rotRight">r</button>
+</div>
+
+
+</body>
+
+</html>
+
+
+<script language="javascript">
+//Dir definition
+var LD = 0;
+var LU = 1;
+var RD = 2;
+var RU = 3;
+
+//Skin definition
+var RED = 0;
+var WHITE = 1;
+var YELLOW = 2;
+
+//Body definition
+var BODY = 0;
+var HEAD = 1;
+var L_ARM1 = 2;
+var L_ARM2 = 3;
+var R_ARM1 = 4;
+var R_ARM2 = 5;
+var L_LEG = 6;
+var R_LEG = 7;
+
+//Accessesory definition
+var BAGS = 0;
+var COAT = 1;
+var EYES = 2;
+var HAIR = 3;
+var MOUTH = 4;
+var MUSTACHE = 5;
+var NOSE = 6;
+var PANT = 7;
+var SHOES = 8;
+
+$("#setPos").click(function() {
+   var sx = parseInt($("#sx").val());
+   var sy = parseInt($("#sy").val());
+   hm.setHMPos(sx,sy);
+//   hm.setDir("ld")
+//   hm.setAniFrame(0);
+   hm.drawFrame();
+})
+
+$("#setFrame1").click(function() {
+   var fid = parseInt($("#anid").val());
+   fid++;
+   if(fid>hm.getAniLen()-1)
+      fid=0;
+   hm.setAniFrame(fid);
+   $("#anid").val(fid);
+   hm.drawFrame();
+})
+
+$("#setFrame2").click(function() {
+   var fid = parseInt($("#anid").val());
+   fid--;
+   if(fid<0)
+     fid = hm.getAniLen()-1;
+   hm.setAniFrame(fid);
+   $("#anid").val(fid);
+   hm.drawFrame();
+})
+
+$("#Mirror").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.invert();
+   hm.drawFrame();
+})
+
+$("#clsPOS").click(function() {
+   $("#posinfo").val("");
+})
+
+$("#getPOS").click(function() {
+   var s = hm.getPOS();
+   var vl = $("#posinfo").val();
+   $("#posinfo").val(vl+"&&"+s);
+})
+
+$("#setPOS1").click(function() {
+   alert($("#posinfo").val());
+   hm.setPOS($("#posinfo").val());
+   hm.drawFrame();
+})
+
+$("#setPOS").click(function() {
+   var ans = $("#posinfo").val().substring(2);
+   hm.animator(ans);
+})
+
+$("#moveUp").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.moveUP();
+
+/*
+   if(sid==5) {
+      hm.selectBody(6);
+      hm.moveUP();
+   }
+   else if(sid==1) {
+      hm.selectBody(2);
+      hm.moveUP();
+   }
+*/   
+   hm.drawFrame();
+})
+
+$("#moveDown").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.moveDOWN();
+/*   
+   if(sid==5) {
+      hm.selectBody(6);
+      hm.moveDOWN();
+   }
+   else if(sid==1) {
+      hm.selectBody(2);
+      hm.moveDOWN();
+   }
+*/   
+   hm.drawFrame();
+})
+
+$("#moveLeft").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.moveLEFT();
+/*   
+   if(sid==5) {
+      hm.selectBody(6);
+      hm.moveLEFT();
+   }
+   else if(sid==1) {
+      hm.selectBody(2);
+      hm.moveLEFT();
+   }
+*/   
+   hm.drawFrame();
+})
+
+$("#moveRight").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   hm.selectBody(sid);
+   hm.moveRIGHT();
+/*   
+   if(sid==5) {
+      hm.selectBody(6);
+      hm.moveRIGHT();
+   }
+   else if(sid==1) {
+      hm.selectBody(2);
+      hm.moveRIGHT();
+   }
+*/   
+   hm.drawFrame();
+})
+
+
+$("#rotRight").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   var rp,ax,ay,ax1,ay1,ax2,ay2,rt,ot;
+   hm.selectBody(sid);
+   hm.rotRIGHT();
+
+/*
+   if(sid==5) {
+      rp = base_pos.getRHand1Pos();
+      ot = base_pos.getRHand1PosAXoff();
+      ax = hm.selected_body.rotX-20;
+      ay = hm.selected_body.rotY-20;
+      rt = hm.selected_body.getRotTarget(rp[0],rp[1],ax,ay,hm.selected_body.degree);
+      hm.selectBody(6);
+      hm.selected_body.setPos(rt[0]-ot[0],rt[1]-ot[1]);
+   }
+   else if(sid==1) {
+      rp = base_pos.getLHand1Pos();
+      ot = base_pos.getLHand1PosAXoff();
+      ax = hm.selected_body.rotX-20;
+      ay = hm.selected_body.rotY-20;
+
+      rt = hm.selected_body.getRotTarget(rp[0],rp[1],ax,ay,hm.selected_body.degree);
+      hm.selectBody(2);
+      hm.selected_body.setPos(rt[0]-ot[0],rt[1]-ot[1]);
+   }
+
+   hm.drawCircle(ax,ay,"#000");
+   hm.drawCircle(rt[0],rt[1],"blue");
+   hm.drawCircle(hm.selected_body.rotX-20,hm.selected_body.rotY-20,"red");
+*/
+   hm.drawFrame();
+
+})
+
+$("#rotLeft").click(function() {
+   var sid = parseInt($("#bodySele").val());
+   var rp,ax,ay,rt,ot;
+   hm.selectBody(sid);
+   hm.rotLEFT();
+/*
+   if(sid==5) {
+      rp = base_pos.getRHand1Pos();
+      ot = base_pos.getRHand1PosAXoff();
+      ax = hm.selected_body.rotX-20;
+      ay = hm.selected_body.rotY-20;
+      rt = hm.selected_body.getRotTarget(rp[0],rp[1],ax,ay,hm.selected_body.degree);
+      hm.selectBody(6);
+      hm.selected_body.setPos(rt[0]-ot[0],rt[1]-ot[1]);
+   }
+   else if(sid==1) {
+      rp = base_pos.getLHand1Pos();
+      ot = base_pos.getLHand1PosAXoff();
+      ax = hm.selected_body.rotX-20;
+      ay = hm.selected_body.rotY-20;
+
+      rt = hm.selected_body.getRotTarget(rp[0],rp[1],ax,ay,hm.selected_body.degree);
+      hm.selectBody(2);
+      hm.selected_body.setPos(rt[0]-ot[0],rt[1]-ot[1]);
+   }
+
+   //hm.drawCircle(ax,ay,"#000");
+   //hm.drawCircle(rt[0],rt[1],"blue");
+   hm.drawCircle(hm.selected_body.rotX-20,hm.selected_body.rotY-20,"red");
+*/
+   hm.drawFrame();
+
+})
+
+
+
+
+function show2() {
+	var img_data = ctx.getImageData(0, 0, 100, 150),
+	x, y, p, i, i2, t,
+	h = 150,
+	w = 100,
+	w_2 = w / 2;
+
+    ctx.clearRect(0,0,100,150);
+
+	for (y = 0; y < h; y ++) {
+		for (x = 0; x < w_2; x ++) {
+			i = (y<<2) * w + (x<<2);
+			i2 = ((y + 1) << 2) * w - ((x + 1) << 2);
+			for (p = 0; p < 4; p ++) {
+				t = img_data.data[i + p];
+				img_data.data[i + p] = img_data.data[i2 + p];
+				img_data.data[i2 + p] = t;
+			}
+		}
+	}
+	$("#posinfo").val(img_data.data);
+	ctx.putImageData(img_data,0,0);
+}
+
+//var orient_code = 0;
+//var color_code = 0;
+//var hm_iID;
+//var color = "yellow";
+
+//walk str:&&37:102:-20:ld_37:79:0:ld_40:77:0:ld_46:100:20:ld_56:80:0:ld_20:20:0:ld&&37:102:-40:ld_37:79:10:ld_40:77:0:ld_46:100:40:ld_56:80:-10:ld_20:20:0:ld&&37:102:-20:ld_37:79:0:ld_40:77:0:ld_46:100:20:ld_56:80:0:ld_20:20:0:ld&&37:102:10:ld_37:79:10:ld_40:77:0:ld_46:98:-10:ld_56:80:-10:ld_20:20:0:ld
+//act1:&&33:104:0:ld_37:87:30:ld_26:84:-10:ld_40:81:0:ld_32:100:10:rd_54:82:-30:ld_66:87:-100:ld_20:22:0:ld&&35:102:0:ld_37:79:0:ld_28:86:0:ld_40:77:0:ld_46:100:0:ld_56:80:0:ld_60:85:0:ld_20:20:0:ld
+
+
+//var inistr = "1||1||lLeg_shoes:1:15:1:23||lHand||lHand1||body||rLeg_shoes:2:23:0:15||rHand||rHand1||head";  //accesory should define the offset to the attached body part
+//var orient = "ld";
+//var hm = new human(orient,inistr);
+//hm.setHMPos(50,120);  //????human???????canvas???????λ??? 50??120??????????????
+
+var isTest = true;
+
+//var inistr = "1||1||lLeg_shoes:1:15:1:23||lHand||lHand1||body_coat:0:3:-1:1||rLeg_shoes:2:23:0:15||rHand||rHand1||head";  //accesory should define the offset to the attached body part
+
+
+var inistr_boy = "1||1||lLeg_B107:6:0:6:1_L505:0:16:0:17||lArm||lLimb||body_A106:0:0:0:0||rLeg_B107:6:0:6:1_L505:0:16:0:17||rArm||rLimb||head_M021:7:41:10:88_M025:15:48:0:0_M024:18:63:0:0_A108:2:40:-3:37_H026:0:0:0:0_A105:-15:-16:-15:-16";  //accesory should define the offset to the attached body part
+var inistr = "1||2||lLeg_L202:0:16:0:18||lArm||lLimb||body_A201:-2:-1:0:0||rLeg_L202:0:16:0:18||rArm||rLimb||head_M205:7:41:10:88_M206:9:37:10:88_M207:17:48:0:0_M208:16:59:0:0_H204:-3:0:0:0_A203:-11:-16:-15:-16";  //accesory should define the offset to the attached body part
+//var inistr_myo = "1||1||lLeg_L503:-3:-2:0:-1||lArm||lLimb||body_A102:0:6:1:3_B107:0:6:1:3_B107:10:6:1:3||rLeg_L502:2:-1:0:0||rArm||rLimb||head_H009:-10:0:2:2";  //accesory should define the offset to the attached body part
+
+var anistr = "&&35;102;-40;ld_37;83;20;ld_28;84;30;ld_40;77;0;ld_46;100;20;ld_56;80;-20;ld_60;83;-20;ld_20;20;0;ld;1&&35;102;20;ld_37;79;0;ld_28;84;10;ld_40;77;0;ld_46;98;-20;ld_54;76;10;ld_58;85;10;ld_20;20;0;ld;2&&35;102;0;ld_37;79;0;ld_28;86;0;ld_40;77;0;ld_46;100;0;ld_56;80;0;ld_60;85;0;ld_20;20;0;ld";
+var orient = "ld";
+var hm = new human(orient,inistr);
+//hm.animator(anistr);
+
+
+var ctx = document.getElementById('canvas').getContext('2d');
+canvas.style.border = "red 1px solid";
+
+
+
+</script>

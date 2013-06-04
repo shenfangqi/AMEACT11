@@ -1,0 +1,22 @@
+<script language="javascript">
+
+function setNick() {
+   var val = document.getElementById("unick").value;
+   document.getElementById("unickescape").value = escape(val);
+   document.getElementById("thisform").submit();
+}
+
+</script>
+
+<form id="thisform" action="registerDB.php" method="post">
+
+boy<input name="gender" type="radio" value="1">&nbsp;&nbsp;&nbsp;&nbsp; girl<input name="gender" type="radio" value="2"><br>
+name:<input name="uname" type=text><br>
+nickname:<input id="unick" name="unick" type=text><input id="unickescape" name="unickescape" type=hidden><br>
+pass:<input name="upass" type=password><br>
+repass:<input name="reupass" type=password><br>
+
+<input type="button" onclick=setNick()>
+
+</form>
+
